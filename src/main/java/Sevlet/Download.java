@@ -7,9 +7,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URLEncoder;
 //火狐base64,ie和google urlutf-8
 
@@ -25,6 +23,18 @@ public class Download extends HttpServlet {
         ServletContext servletContext=getServletContext();
         InputStream resourceAsStream =servletContext.getResourceAsStream("/file/"+downloadFileName);
 
+        /*Request URL: http://localhost:8080/learloadx_war/down
+          Request Method: GET
+          Status Code: 200
+          Remote Address: [::1]:8080
+          Referrer Policy: strict-origin-when-cross-origin*/
+
+        /*Connection: keep-alive
+          Content-Disposition: attachment; filename=%E5%BF%AB%E5%BF%AB%E5%BF%AB.png
+          Content-Type: image/png
+          Date: Mon, 04 Oct 2021 07:30:25 GMT
+          Keep-Alive: timeout=20
+          Transfer-Encoding: chunked*/
         //获取要下载的文件类型
         String type = servletContext.getMimeType("/file/" + downloadFileName);
         System.out.println("type:  "+type);
@@ -46,9 +56,14 @@ public class Download extends HttpServlet {
 
         //resp.setHeader("Content-Disposition","attachment; filename=" +downloadFileName);
         OutputStream  outputStream = resp.getOutputStream();
+        byte[] b=new byte[102400];
+        resourceAsStream.read(b);
+        String t=new String(b);
+        System.out.println(t);
         //读取输入流中全部数据，复制给输出流，输出给客户端
         IOUtils.copy(resourceAsStream ,outputStream);
         //outputStream.write();
+        System.out.println("xxxx");
 
     }
 }
